@@ -1,6 +1,7 @@
 export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message); }
 }
+export const SESSION_EXPIRED_EVENT = 'dee-light:session-expired';
 const BROWSER_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1';
 const SERVER_BASE = process.env.API_URL || BROWSER_BASE;
 
@@ -38,6 +39,9 @@ export async function api<T = unknown>(path: string, opts: { method?: string; bo
     if (r.ok) return api<T>(path, opts, true);
   }
   const json = await res.json().catch(() => null);
+  if (res.status === 401 && !path.startsWith('/auth/') && typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
+  }
   if (!res.ok) throw new ApiError(res.status, messageOf(json, res.status));
   return json.data as T;
 }

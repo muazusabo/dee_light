@@ -19,7 +19,7 @@ export default function Dashboard() {
         <>
           <section aria-labelledby="orders-summary">
             <h2 id="orders-summary" className="mb-3 text-xl font-semibold text-brand">Orders &amp; payments</h2>
-            <dl className="grid grid-cols-2 gap-4 xl:grid-cols-3">
+            <dl className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:gap-4 xl:grid-cols-3">
               <SummaryCard label="New orders" value={data.pendingOrders} href="/admin/orders" />
               <SummaryCard label="In progress" value={data.processingOrders} href="/admin/orders" />
               <SummaryCard label="Completed" value={data.completedOrders} href="/admin/orders" />
@@ -34,7 +34,7 @@ export default function Dashboard() {
           </section>
           <section aria-labelledby="store-summary" className="mt-8">
             <h2 id="store-summary" className="mb-3 text-xl font-semibold text-brand">Store</h2>
-            <dl className="grid grid-cols-2 gap-4 md:grid-cols-3">
+            <dl className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:gap-4 md:grid-cols-3">
               <SummaryCard label="Active products" value={`${data.activeProducts} / ${data.totalProducts}`} href="/admin/products" />
               <SummaryCard label="Customers" value={data.customers} href="/admin/customers" />
             </dl>
@@ -48,7 +48,7 @@ export default function Dashboard() {
 }
 
 function SummaryCard({ label, value, href, children }: { label: string; value: string | number; href?: string; children?: React.ReactNode }) {
-  return <div className="rounded-lg border border-line bg-white p-4">
-    <dl><dt className="text-sm text-muted">{label}</dt><dd className="mt-1 text-2xl font-semibold text-brand">{href ? <Link href={href} className="rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand">{value}</Link> : value}{children}</dd></dl>
+  return <div className="min-w-0 rounded-lg border border-line bg-white p-3 sm:p-4">
+    <dl><dt className="text-sm text-muted">{label}</dt><dd className="mt-1 break-words text-xl font-semibold text-brand sm:text-2xl">{href ? <Link href={href} className="rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand">{value}</Link> : value}{children}</dd></dl>
   </div>;
 }

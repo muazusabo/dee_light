@@ -1,6 +1,6 @@
 'use client';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { api } from '@/lib/api';
+import { api, SESSION_EXPIRED_EVENT } from '@/lib/api';
 import type { User } from '@/types';
 
 const HINT = 'dl_session_hint'; // non-sensitive flag: "this browser had a session", so we only try /auth/refresh when useful
@@ -22,6 +22,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch { /* API unreachable: stay anonymous */ } finally { setLoading(false); }
     })();
+  }, []);
+
+  useEffect(() => {
+    const expireSession = () => {
+      localStorage.removeItem(HINT);
+      setUser(null);
+    };
+    window.addEventListener(SESSION_EXPIRED_EVENT, expireSession);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, expireSession);
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
