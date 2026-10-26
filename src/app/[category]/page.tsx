@@ -29,7 +29,9 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     serverApi<Paged<ProductSummary>>(`/products${qs({ ...sp, category: cat.slug, page, pageSize: 12 })}`),
     serverApi<Facets>(`/categories/${cat.slug}/filters`).catch(() => null),
   ]);
-  const { category: _c, page: _p, ...filterParams } = sp;
+  const filterParams = { ...sp };
+  delete filterParams.category;
+  delete filterParams.page;
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: cat.name }]} />

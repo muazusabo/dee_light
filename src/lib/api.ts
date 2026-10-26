@@ -4,9 +4,18 @@ export class ApiError extends Error {
 const BROWSER_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1';
 const SERVER_BASE = process.env.API_URL || BROWSER_BASE;
 
-function messageOf(body: any, status: number) {
-  const m = body?.message;
-  return Array.isArray(m) ? m.join('. ') : typeof m === 'string' ? m : `Request failed (${status})`;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function messageOf(body: unknown, status: number) {
+  const message = isRecord(body) ? body.message : undefined;
+  if (typeof message === 'string') return message;
+  if (Array.isArray(message)) {
+    const parts = message.filter((part): part is string => typeof part === 'string');
+    if (parts.length) return parts.join('. ');
+  }
+  return `Request failed (${status})`;
 }
 
 /** Server-side (Server Components): public data only, no cookies. */

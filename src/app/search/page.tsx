@@ -17,7 +17,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     serverApi<Category[]>('/categories').catch(() => [] as Category[]),
     oneCat ? serverApi<Facets>(`/categories/${oneCat}/filters`).catch(() => null) : Promise.resolve(null),
   ]);
-  const { page: _p, ...rest } = sp;
+  const rest = { ...sp };
+  delete rest.page;
   const hasFilters = Object.keys(rest).some((k) => k !== 'sort');
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">

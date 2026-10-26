@@ -6,6 +6,7 @@ import { useAuth } from '@/features/auth-provider';
 import { useApi } from '@/hooks/use-api';
 import { api } from '@/lib/api';
 import { phone } from '@/lib/schemas';
+import type { User } from '@/types';
 
 type Addr = { id: string; line1: string; city: string; state: string; isDefault: boolean };
 export default function Profile() {
@@ -20,7 +21,7 @@ export default function Profile() {
   async function save(e: React.FormEvent) {
     e.preventDefault(); setMsg(null);
     if (ph && !phone.safeParse(ph).success) return setMsg({ t: 'error', m: 'Enter a valid phone number' });
-    try { const u = await api<typeof user>('/users/me', { method: 'PATCH', body: { name, ...(ph ? { phone: ph } : {}) } }); setUser(u as any); setMsg({ t: 'success', m: 'Profile saved.' }); }
+    try { const u = await api<User>('/users/me', { method: 'PATCH', body: { name, ...(ph ? { phone: ph } : {}) } }); setUser(u); setMsg({ t: 'success', m: 'Profile saved.' }); }
     catch (err) { setMsg({ t: 'error', m: (err as Error).message }); }
   }
   async function addAddr(e: React.FormEvent) {
